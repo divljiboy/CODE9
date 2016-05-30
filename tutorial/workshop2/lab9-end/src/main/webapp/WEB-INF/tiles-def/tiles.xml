@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<definition name="standardLayout" template="/WEB-INF/jsp/layout/standardLayout.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="content" value="" />
+	</definition>
+
+	<definition name="home" extends="standardLayout">
+		<put-attribute name="title" value="Taster - Dashboard" />
+		<put-attribute name="content" value="/WEB-INF/jsp/content/home.jsp" />
+	</definition>
+	<definition name="categories" extends="standardLayout">
+		<put-attribute name="title" value="Taster - Categories" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/category/categories.jsp" />
+	</definition>
+	<definition name="addEditCategory" extends="standardLayout">
+		<put-attribute name="title" value="Taster - Add/Edit Category" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/category/addEditCategory.jsp" />
+	</definition>
+	<definition name="questions" extends="standardLayout">
+		<put-attribute name="title" value="Taster - Questions" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/question/questions.jsp" />
+	</definition>
+	<definition name="addEditQuestion" extends="standardLayout">
+		<put-attribute name="title" value="Taster - Add/Edit Question" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/question/addEditQuestion.jsp" />
+	</definition>
+
+</tiles-definitions>

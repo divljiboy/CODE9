@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+						http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+						http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
+						http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<mvc:annotation-driven />
+
+	<!-- Authorization server -->
+	<oauth:authorization-server
+		client-details-service-ref="clientDetails" token-services-ref="tokenServices"
+		user-approval-handler-ref="userApprovalHandler">
+		<oauth:implicit />
+		<oauth:password />
+	</oauth:authorization-server>
+
+	<oauth:client-details-service id="clientDetails">
+		<oauth:client client-id="levi9-taster-spa-client"
+			authorized-grant-types="implicit" authorities="IS_AUTHENTICATED_FULLY" scope="api" />
+	</oauth:client-details-service>
+
+	<bean id="userApprovalHandler"
+		class="com.levi9.taster.auth.AlwaysApproveUserApprovalHandler" />
+		
+	<bean id="oauthAccessDeniedHandler"
+		class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler" />
+
+	<bean id="tokenStore"
+		class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">
+		<constructor-arg ref="authDataSource" />
+	</bean>
+
+	<bean id="tokenServices"
+		class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
+		<property name="tokenStore" ref="tokenStore" />
+		<property name="clientDetailsService" ref="clientDetails" />
+	</bean>
+
+	<http pattern="/oauth/token" create-session="stateless"
+		authentication-manager-ref="clientAuthenticationManager"
+		xmlns="http://www.springframework.org/schema/security">
+		<intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY" />
+		<anonymous enabled="false" />
+		<http-basic entry-point-ref="clientAuthenticationEntryPoint" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<authentication-manager id="clientAuthenticationManager"
+		xmlns="http://www.springframework.org/schema/security">
+		<authentication-provider user-service-ref="clientDetailsUserService" />
+	</authentication-manager>
+
+	<bean id="clientDetailsUserService"
+		class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+		<constructor-arg ref="clientDetails" />
+	</bean>
+
+	<bean id="clientAuthenticationEntryPoint"
+		class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+		<property name="realmName" value="taster/client" />
+		<property name="typeName" value="Basic" />
+	</bean>
+
+	<http pattern="/oauth/**" xmlns="http://www.springframework.org/schema/security">
+		<intercept-url pattern="/oauth/**" />
+		<form-login login-page="/login" login-processing-url="/oauth/security_check" authentication-failure-url="/login?failed=true" />
+		<anonymous enabled="false" />
+	</http>
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- This interceptor logout user from the authorization server when he 
+				has been successfully logged in in order to implement logout on the resource 
+				server properly and prevent automatic login via session on authorization 
+				server -->
+			<mvc:mapping path="/oauth/authorize" />
+			<bean class="com.levi9.taster.auth.InvalidateSessionInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<beans profile="inmemory">
+		<context:property-placeholder properties-ref="inMemoryProperties" ignore-unresolvable="true" />
+		<util:properties id="inMemoryProperties" location="classpath:com/levi9/taster/auth/cfg/${env}/inmemory.properties" />
+	
+		<authentication-manager alias="authenticationManager"
+			xmlns="http://www.springframework.org/schema/security">
+			<authentication-provider user-service-ref="jdbcUserDetailsService" />
+		</authentication-manager>
+		
+		<bean id="jdbcUserDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl" >
+			<property name="dataSource" ref="authDataSource" />
+		</bean>
+		
+		<!-- Authorization data source -->
+		<bean id="authDataSource"
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource" depends-on="startDerby">
+			<property name="driverClassName" value="${jdbc.driver}" />
+			<property name="url" value="${jdbc.url}" />
+		</bean>
+		
+		<jdbc:initialize-database data-source="authDataSource">
+	  		<jdbc:script location="classpath:com/levi9/taster/auth/cfg/oauth-schema.sql"/>
+	  		<jdbc:script location="classpath:com/levi9/taster/auth/cfg/oauth-testdata.sql"/>
+		</jdbc:initialize-database>
+	
+		<bean id="derbyServer" class="org.apache.derby.drda.NetworkServerControl" destroy-method="shutdown" />
+	
+		<bean id="startDerby" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" depends-on="derbyServer" >
+			<property name="targetObject" ref="derbyServer" />
+			<property name="targetMethod" value="start" />
+			<property name="arguments" ref="pw" />
+		</bean>
+		
+		<bean id="pw" class="java.io.PrintWriter">
+		    <constructor-arg>
+		        <util:constant static-field="java.lang.System.out" />
+		    </constructor-arg>
+		    <constructor-arg value="true" />
+		</bean>
+	</beans>
+	
+	<beans profile="jpa">
+		<context:property-placeholder properties-ref="jpaProperties" ignore-unresolvable="true" />
+		<util:properties id="jpaProperties" location="classpath:com/levi9/taster/auth/cfg/${env}/jpa.properties" />
+	
+		<authentication-manager alias="authenticationManager"
+			xmlns="http://www.springframework.org/schema/security">
+			<authentication-provider user-service-ref="jdbcUserService" />
+		</authentication-manager>
+		
+		<bean id="jdbcUserService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+   			<property name="dataSource" ref="authDataSource" />
+   		</bean>
+   		
+		<!-- Authorization data source -->
+		<bean id="authDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+		   <property name="driverClass" value="${jdbc.driver}" />
+		   <property name="jdbcUrl" value="${jdbc.url}" />
+		   <property name="username" value="${jdbc.username}"/>
+		   <property name="password" value="${jdbc.password}"/>
+		   <property name="idleConnectionTestPeriodInMinutes" value="1"/>
+		   <property name="idleMaxAgeInMinutes" value="4"/>
+		   <property name="maxConnectionsPerPartition" value="10"/>
+		   <property name="minConnectionsPerPartition" value="5"/>
+		   <property name="partitionCount" value="2"/>
+		   <property name="acquireIncrement" value="2"/>
+		   <property name="statementsCacheSize" value="100"/>
+		</bean>
+	</beans>
+
+</beans>

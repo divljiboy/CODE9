@@ -1,0 +1,50 @@
+/**
+ * My stylesheet
+ * =============
+ *
+ * author: a.stoisavljevic@levi9.com
+ * date: March 2014.
+ * version: 1
+ */
+ 
+.navbar-inverse {
+    background-color: #033C73;
+    border-color: #022F5A;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #FFFFFF;
+} 
+
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {
+    color: #FFFFFF;
+}
+.navbar-inverse .navbar-text {
+    color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover, 
+.navbar-inverse .navbar-nav > li > a:focus {
+    background-color: #022F5A;
+    color: #FFFFFF;
+}
+
+.navbar-inverse .navbar-nav > .active > a, 
+.navbar-inverse .navbar-nav > .active > a:hover, 
+.navbar-inverse .navbar-nav > .active > a:focus {
+    background-color: #022F5A;
+    color: #FFFFFF;
+}
+
+.page-content {
+	padding-top: 60px;
+	color: #317EAC;
+}
+
+.page-header h1 {
+	font-size: 4em;
+}

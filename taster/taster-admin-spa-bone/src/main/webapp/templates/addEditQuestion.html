@@ -1,0 +1,56 @@
+<section style="overflow: auto;">
+	<h3 class="pull-left">
+		<small><%= t.questions %></small>
+	</h3>
+</section>
+<section class="panel panel-default" style="border: 0px">
+
+	<div class="form-group-sm categoryId">
+		<div class="input-group">
+			<span class="input-group-addon"><%= t.category %></span>
+			<select id="category-select" class="form-control">
+				<% categoriesCollection.each(function(category) { %>
+					<option value='<%= category.get('id') %>'><%= category.get('name') %></option> 
+				<% }); %>
+			</select>
+		</div>
+	</div>
+	<br/>
+	
+	<div class="form-group-sm content">
+		<div class="input-group">
+			<span class="input-group-addon"><%= t.questionContent %></span>
+			<input id="content" type="text" class="form-control" data-bind="value:content, events:['keyup']" required="" />
+		</div>
+	</div>
+	<br/>
+	<section class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-title"><%= t.questionTags %></div>
+		</div>
+		<div class="panel-body">
+			<div class="input-group">
+				<input type="text" class="form-control tag-input">
+				<span class="input-group-addon add-tag"> 
+					<i class="glyphicon glyphicon-plus"></i>
+				</span>
+			</div>
+			<div class="form-group-sm" style="margin-top: 25px">
+				<div class="well tag-checkboxes">
+					<!-- Tag checkboxes go here -->
+				</div>
+			</div>
+			<button class="btn btn-primary pull-right remove-tags"><%= t.questionRemoveTags %></button>
+		</div>
+	</section>
+
+	<section class="panel panel-default">
+		<div class="panel-heading">
+			<div class="panel-title"><%= t.answers %></div>
+		</div>
+		<div class="answersBody panel-body">
+			<!-- Answers view goes here -->
+		</div>
+	</section>
+
+</section>

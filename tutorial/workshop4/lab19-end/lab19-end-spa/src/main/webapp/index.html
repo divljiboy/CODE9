@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title>Code9 - Taster - SPA</title>
+
+    <meta name="description" content="">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- import Bootstrap CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- import My style CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Modernizr must be loaded before rendering of body takes place -->
+    <script src="js/modernizr.js"></script>
+</head>
+<body>
+    <!-- Here goes my own HTML code -->
+    <div class="container" id="mainArea">
+
+    </div>
+
+	<!-- Here comes the templates -->
+    <script type="text/template" id="tpl-header">
+        <div class="navbar navbar-fixed-top navbar-inverse navbar-default">
+            <div class="container">
+				<div class="navbar-header">
+					<button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+                	<a class="navbar-brand" href="#">Code9</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#home">Home</a></li>
+						<li><a href="#about">About</a></li>
+					</ul>
+				</div>
+            </div>
+
+        </div>
+    </script>
+    
+    <script type="text/template" id="tpl-page-index">
+		<div class="container page-content page-header">
+			<h1>Taster</h1>
+		</div>
+	</script>
+    
+    <script type="text/template" id="tpl-page-about">
+		<div class="container page-content">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							About
+						</div>
+						<div class="panel-body">
+							<h3>Who is Levi9?</h3>
+							<p>
+								We are the new generation IT service company which is 
+								extremely committed and accountable to its customers and its people.
+							</p>
+							<p>
+								We firmly believe in being transparant, pro-active and result driven.
+							</p>
+							<p>
+								With headquarters in Amsterdam, The Netherlands and three development 
+								centers in Serbia, Romania and Ukraine, Levi9 provides technical capabilities, 
+								industry knowledge and nearshore cost advantages to deliver advanced technology 
+								solutions on time and on budget. Levi9 has over 450 IT professionals on its own payroll.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	
+    <script type="text/template" id="tpl-page-home">
+		<div class="container page-content">
+			<ul class="nav nav-pills nav-stacked">
+				<li>
+					<a href="#home">Home</a>
+				</li>
+				<li>
+					<a href="#categories">Categories</a>
+				</li>
+				<li class="disabled">
+					<a href="#questions">Questions</a>
+				</li>
+
+			</ul>
+		</div>
+	</script>
+	
+    <script type="text/template" id="tpl-category">
+        <tr>
+            <td><%= id %></td>
+            <td><%= name %></td>
+            <td>
+                <button type="button" class="btn btn-default btn-sm btn-view" data-id="<%= id %>">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                    View
+                </button>
+            </td>
+            <td>
+                <button id=type="button" class="btn btn-default btn-sm btn-delete" data-id="<%= id %>">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Delete
+                </button>
+            </td>
+        </tr>
+    </script>
+    
+    <script type="text/template" id="tpl-categories">
+		<div class="container page-content">
+        	<div class="table-responsive">
+            	<table class="table table-bordered">
+                	<col style="width:10%">
+                	<col style="width:70%">
+                	<col style="width:10%">
+                	<col style="width:10%">
+                	<thead>
+                    	<tr>
+                        	<th>#</th>
+                        	<th>Category name</th>
+                        	<th>&nbsp;</th>
+                        	<th>&nbsp;</th>
+                    	</tr>
+                	</thead>
+                	<tbody>
+
+                	</tbody>
+            	</table>
+        	</div>
+
+        	<div class="row">
+            	<div class="col-md-6">
+                	<button type="button" class="btn btn-primary" id="btnAddNewCategory">
+                    	<span class="glyphicon glyphicon-plus"></span>
+                    	Add category
+                	</button>
+            	</div>
+        	</div>
+		</div>
+    </script>
+    
+    <script type="text/template" id="tpl-category-detail">
+		<div class="container page-content">
+        	<div class="category-info">
+            	<h2>Category: <%= name %></h2>
+            	<div id="horizontal-form">
+                	<form class="form-horizontal">
+                   		<div class="form-group">
+                        	<label for="categoryId" class="col-sm-2 control-label">#ID:</label>
+                        	<div class="col-sm-10">
+                            	<input id="categoryId" type="text" class="form-control" value="<%= id %>" disabled>
+                        	</div>
+                    	</div>
+                    	<div class="form-group">
+                        	<label for="categoryName" class="col-sm-2 control-label">Name:</label>
+                        	<div class="col-sm-10">
+                            	<input id="categoryName" type="text" class="form-control" value="<%= name %>" disabled>
+                        	</div>
+                    	</div>
+                	</form>
+            	</div>
+        	</div>
+			<div class="action-buttons">
+				<button class="btn btn-info" type="button" id="btnBackToCategories">
+					<span class="glyphicon glyphicon-arrow-left"></span>
+					Back
+				</button>
+			</div>
+		</div>
+    </script>
+    
+    <script type="text/template" id="tpl-add-category">
+		<div class="container page-content">
+        	<h2>Add new category</h2>
+
+        	<div class="row v-form-margin">
+            	<div class="col-md-2">
+                	Name:*
+            	</div>
+            	<div class="col-md-6">
+                	<input type="text" name="categoryName">
+            	</div>
+        	</div>
+        	<div class="row v-form-margin">
+            	<div class="col-md-6 pull-right">
+                	<button type="button" class="btn btn-success" id="btnSubmitCategory">
+                    	<span class="glyphicon glyphicon-ok"></span>
+                    	Submit
+                	</button>
+                	<button type="button" class="btn btn-danger" id="btnCancelCategory">
+                    	<span class="glyphicon glyphicon-remove"></span>
+                    	Cancel
+                	</button>
+            	</div>
+        	</div>
+		</div>
+    </script>
+    
+	
+    <!-- include jQuery -->
+    <script src="js/jquery-2.1.0.js"></script>
+
+    <!-- include Bootstrap JS -->
+    <script src="js/bootstrap.js"></script>
+
+    <script src="js/underscore.js"></script>
+    <script src="js/backbone.js"></script>
+    <script src="js/json2.js"></script>
+    
+    <!-- Backbone fake-server -->
+    <script src="js/backbone-faux-server.js"></script>
+	
+	<!-- Code9 variable namespace  -->
+	<script src="js/app.js"></script>
+
+	<!-- Code9 Models and Collection -->
+	<script src="js/models/categoryModel.js"></script>
+	<script src="js/collections/categoriesCollection.js"></script>
+    
+    <!-- Code9 Views -->
+    <script src="js/views/headerView.js"></script>
+    <script src="js/views/indexView.js"></script>
+    <script src="js/views/homeView.js"></script>
+    <script src="js/views/aboutView.js"></script>
+    <script src="js/views/categoriesView.js"></script>
+    <script src="js/views/categoryView.js"></script>
+    <script src="js/views/categoryDetailView.js"></script>
+    <script src="js/views/addCategoryView.js"></script>
+
+    <!-- include my own JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>

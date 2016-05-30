@@ -1,0 +1,13 @@
+<form class="form-edit-answer" role="form">
+	<div class="form-group-sm answerContent">
+		<div id="name-group" class="input-group answerContent">
+			<span class="input-group-addon"><%= t.answerContent %></span>
+			<input id="content" type="text" class="form-control" data-bind="value:answerContent,events:['keyup']" required="" />
+		</div>
+	</div>
+	<div class="checkbox correct">
+   		<label>
+    		<input type="checkbox" class="correct" data-bind="checked:correct"> <%= t.answerCorrect %>
+   		</label>
+  	</div>
+</form>

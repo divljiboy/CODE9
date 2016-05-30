@@ -1,0 +1,52 @@
+<?xml  version="1.0"  encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+						http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+    					http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<context:property-placeholder properties-ref="jpaProperties" ignore-unresolvable="true" />
+	<util:properties id="jpaProperties" location="classpath:com/levi9/taster/rest/api/cfg/${env}/jpa.properties" />
+
+ 	<tx:annotation-driven />
+ 	
+	<context:component-scan base-package="com.levi9.taster.core.jpa" />
+	
+	<jpa:repositories base-package="com.levi9.taster.core.jpa" />
+
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+	   <property name="driverClass" value="${jdbc.driver}" />
+	   <property name="jdbcUrl" value="${jdbc.url}" />
+	   <property name="username" value="${jdbc.username}"/>
+	   <property name="password" value="${jdbc.password}"/>
+	   <property name="idleConnectionTestPeriodInMinutes" value="1"/>
+	   <property name="idleMaxAgeInMinutes" value="4"/>
+	   <property name="maxConnectionsPerPartition" value="10"/>
+	   <property name="minConnectionsPerPartition" value="5"/>
+	   <property name="partitionCount" value="2"/>
+	   <property name="acquireIncrement" value="2"/>
+	   <property name="statementsCacheSize" value="100"/>
+	</bean>
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="${jdbc.dialect}" />
+                <property name="generateDdl" value="true"></property>
+                <property name="showSql" value="false"></property>
+            </bean>
+        </property>
+    </bean>
+ 
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+	
+</beans>

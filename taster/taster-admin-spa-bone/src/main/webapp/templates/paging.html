@@ -1,0 +1,9 @@
+<ul class="pager">
+  <% if(collection.hasPreviousPage()) { %>
+  	<li><a class="previous" href="javascript:;"><%= t.previous %></a></li>
+  <% } %>
+  <%= collection.state.currentPage + 1 %><%= t.of %><%= collection.state.totalPages %>
+  <% if(collection.hasNextPage()) { %>
+  	<li><a class="next" href="javascript:;"><%= t.next %></a></li>
+  <% } %>
+</ul>

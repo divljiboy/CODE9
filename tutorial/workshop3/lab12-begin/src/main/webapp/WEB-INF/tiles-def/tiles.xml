@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<definition name="standardLayout" template="/WEB-INF/jsp/layout/standardLayout.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="content" value="" />
+	</definition>
+
+	<definition name="home" extends="standardLayout">
+		<put-attribute name="title" value="page.home.title" />
+		<put-attribute name="content" value="/WEB-INF/jsp/content/home.jsp" />
+	</definition>
+	<definition name="categories" extends="standardLayout">
+		<put-attribute name="title" value="page.categories.title" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/category/categories.jsp" />
+	</definition>
+	<definition name="addEditCategory" extends="standardLayout">
+		<put-attribute name="title" value="page.addEditCategory.title" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/category/addEditCategory.jsp" />
+	</definition>
+	<definition name="questions" extends="standardLayout">
+		<put-attribute name="title" value="page.questions.title" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/question/questions.jsp" />
+	</definition>
+	<definition name="addEditQuestion" extends="standardLayout">
+		<put-attribute name="title" value="page.addEditQuestion.title" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/question/addEditQuestion.jsp" />
+	</definition>
+	<definition name="tests" extends="standardLayout">
+		<put-attribute name="title" value="page.tests.title" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/test/tests.jsp" />
+	</definition>
+	<definition name="addEditTest" extends="standardLayout">
+		<put-attribute name="title" value="page.addEditTest.title" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/test/addEditTest.jsp" />
+	</definition>
+	<definition name="addRemoveQuestions" extends="standardLayout">
+		<put-attribute name="title" value="page.addRemoveQuestions.title" />
+		<put-attribute name="content"
+			value="/WEB-INF/jsp/content/test/addRemoveQuestions.jsp" />
+	</definition>
+
+</tiles-definitions>

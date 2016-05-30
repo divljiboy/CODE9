@@ -1,0 +1,21 @@
+<div class="input-group">
+	<span class="input-group-addon">
+		<input id="answer-correct" type="checkbox" class="correct"/>
+	</span>
+	<input id="answer-content" type="text" class="form-control"/>
+	<span class="input-group-addon add">
+		<i class="glyphicon glyphicon-plus"></i>
+	</span>
+</div>
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th width="60px" style="text-align: center"><label><%= t.answerCorrect %></label></th>
+			<th><label><%= t.answerContent %></label></th>
+			<th width="120px" style="text-align: center"><label><%= t.actions %></label></th>
+		</tr>
+	</thead>
+	<tbody class="answersList">
+		<!-- Answers go here -->
+	</tbody>
+</table>

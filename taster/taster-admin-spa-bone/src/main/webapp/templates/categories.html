@@ -1,0 +1,27 @@
+<section style="overflow: auto;">
+	<h3 class="pull-left"><small><%= t.categories %></small></h3>
+	<a href="javascript:;" class="btn-sm btn-primary pull-right new-category"><%= t.categoryNew %></a>
+</section>
+<section class="panel panel-default">
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th width="30px" style="text-align:center">
+					<label><%= t.categoryId %></label>
+				</th>
+				<th>
+					<label><%= t.categoryName %></label>
+				</th>
+ 				<th width="45px" style="text-align:center">
+					<label><%= t.questions %></label>
+				</th>
+				 <th width="120px" style="text-align:center">
+					<label><%= t.actions %></label>
+				</th>
+			</tr>
+		</thead>
+		<tbody class="categoriesList">
+			<!-- Categories go here -->
+		</tbody>
+	</table>
+</section>

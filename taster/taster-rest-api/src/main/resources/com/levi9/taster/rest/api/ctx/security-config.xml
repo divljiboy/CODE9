@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+						http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+						http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+						http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd">
+
+	<mvc:annotation-driven />
+
+	<http pattern="/api/**" create-session="never" entry-point-ref="oauthAuthenticationEntryPoint"
+		authentication-manager-ref="clientAuthenticationManager"
+		xmlns="http://www.springframework.org/schema/security"
+		use-expressions="true">
+		<anonymous enabled="false" />
+		<intercept-url pattern="/api/**" access="isAuthenticated()" />
+		<custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+
+	<oauth:resource-server id="resourceServerFilter" resource-id="taster-rest-api" token-services-ref="tokenServices" />
+
+	<bean id="oauthAuthenticationEntryPoint"
+		class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint"
+		p:realmName="taster" />
+
+	<bean id="oauthAccessDeniedHandler"
+		class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler" />
+
+	<oauth:client-details-service id="clientDetails">
+		<oauth:client client-id="levi9-taster-spa-client"
+			authorized-grant-types="implicit" authorities="IS_AUTHENTICATED_FULLY" scope="api" />
+	</oauth:client-details-service>
+	
+	<authentication-manager id="clientAuthenticationManager"
+		xmlns="http://www.springframework.org/schema/security">
+		<authentication-provider user-service-ref="clientDetailsUserService" />
+	</authentication-manager>
+
+	<bean id="clientDetailsUserService"
+		class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+		<constructor-arg ref="clientDetails" />
+	</bean>
+
+	<bean id="tokenServices"
+		class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
+		<property name="tokenStore" ref="tokenStore" />
+		<property name="clientDetailsService" ref="clientDetails" />
+	</bean>
+
+	<bean id="tokenStore"
+		class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">
+		<constructor-arg ref="authDataSource" />
+	</bean>
+	
+	<beans profile="inmemory">
+		<bean id="authDataSource"
+			class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="${jdbc.driver}" />
+			<property name="url" value="${jdbc.url}" />
+		</bean>
+	</beans>
+	
+	<beans profile="jpa">
+		<bean id="authDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+		   <property name="driverClass" value="${jdbc.driver}" />
+		   <property name="jdbcUrl" value="${jdbc.url}" />
+		   <property name="username" value="${jdbc.username}"/>
+		   <property name="password" value="${jdbc.password}"/>
+		   <property name="idleConnectionTestPeriodInMinutes" value="1"/>
+		   <property name="idleMaxAgeInMinutes" value="4"/>
+		   <property name="maxConnectionsPerPartition" value="30"/>
+		   <property name="minConnectionsPerPartition" value="10"/>
+		   <property name="partitionCount" value="3"/>
+		   <property name="acquireIncrement" value="5"/>
+		   <property name="statementsCacheSize" value="100"/>
+		</bean>
+	</beans>
+
+</beans>
